@@ -1,3 +1,4 @@
+import "./style.scss";
 "use strict";
 const test = 'test';
 

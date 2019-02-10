@@ -1,10 +1,14 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
 
-  entry: './index.js',
+  entry: {
+    main: ['webpack-dev-server/client', 'webpack/hot/dev-server', './src/index.js']
+  },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -12,7 +16,17 @@ module.exports = {
   },
 
   plugins: [
-    new HtmlPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin('dist', {} ),
+    new MiniCssExtractPlugin({
+      filename: 'style.css',
+    }),
+    new HtmlPlugin({
+      inject: false,
+      hash: true,
+      template: './src/index.html',
+      filename: 'index.html'
+    })
   ],
 
   module: {
@@ -25,7 +39,12 @@ module.exports = {
           presets: ['@babel/preset-env']
         }
       }
-    }]
+    },
+    {
+      test: /\.scss$/,
+      use:  [  'style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader']
+    }
+  ]
   }
 
 }
